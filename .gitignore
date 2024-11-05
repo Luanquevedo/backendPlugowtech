@@ -1,0 +1,36 @@
+# Node modules
+/node_modules/
+
+# Logs
+*.log
+logs/
+
+# Dependências do npm
+package-lock.json
+
+# Arquivos de configuração do ambiente
+.env
+
+# Arquivos de build
+/dist
+/build
+/.next
+/.nuxt
+
+# Arquivos temporários de editores
+.vscode/
+.idea/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos de testes
+/coverage
+
+# Arquivos de cache
+.npm/
+.cache/
+
+# Arquivos do Redis (se estiver usando Redis localmente para testes)
+*.rdb
