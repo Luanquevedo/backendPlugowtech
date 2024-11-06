@@ -2,6 +2,7 @@
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "crypto": "^1.0.1",
     "csurf": "^1.11.0",
     "dotenv": "^16.4.5",
