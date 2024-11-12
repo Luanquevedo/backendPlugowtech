@@ -1,8 +1,10 @@
-import { hash } from "bcrypt";
+import { hash, compare } from "bcrypt";
 import { safeParse as _safeParse } from "../schema/userSchema.js";
+import jwt from "jsonwebtoken";
 import { findUserByUsername as _findUserByUsername, createUser as _createUser } from "../service/userService.js";
 
 const createUser = async (req, res) => {
+  console.log('Request Body:', req.body)
   const result = _safeParse(req.body);
 
   if (!result.success) {
@@ -31,7 +33,7 @@ const createUser = async (req, res) => {
   }
 };
 const loginUser = async (req, res) => {
-  const result = safeParse(req.body); // Valida o corpo da requisição (username e password)
+  const result = _safeParse(req.body); // Valida o corpo da requisição (username e password)
 
   if (!result.success) {
     return res.status(400).json(result.error.errors);
@@ -41,7 +43,7 @@ const loginUser = async (req, res) => {
 
   try {
     // Verifica se o usuário existe no banco de dados
-    const user = await findUserByUsername(username);
+    const user = await _findUserByUsername(username);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
