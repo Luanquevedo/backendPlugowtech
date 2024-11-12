@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
-const userSchema = require("../schemas/userSchema");
-const userService = require("../services/userService");
+const userSchema = require("../schema/userSchema");
+const userService = require("../service/userService");
 
 const createUser = async (req, res) => {
   const result = userSchema.safeParse(req.body);
