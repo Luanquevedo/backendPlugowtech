@@ -1,34 +1,16 @@
-const bcrypt = require("bcrypt");
 const userSchema = require("../schema/userSchema");
 const userService = require("../service/userService");
 
-const createUser = async (req, res) => {
-  const result = userSchema.safeParse(req.body);
-
-  if (!result.success) {
-    return res.status(400).json(result.error.errors);
-  }
-
+async function registerUser(req, res) {
   try {
-    const existingUser = await userService.findUserByUsername(result.data.username);
-
-    if (existingUser) {
-      return res.status(400).json({ error: "Username is already taken" });
-    }
-
-    const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
-    const hashedPassword = await bcrypt.hash(result.data.password, saltRounds);
-
-    const user = await userService.createUser({
-      username: result.data.username,
-      password: hashedPassword,
-    });
-
-    return res.status(201).json(user);
+    const validatedData = userSchema.parse(req.body);
+    const user = await userService.createUser(validatedData);
+    res.status(201).json({ message: 'Usuário criado com sucesso!', user });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    res.status(400).json({ error: error.message });
   }
-};
+}
 
-module.exports = { createUser };
+module.exports = {
+  registerUser,
+};
