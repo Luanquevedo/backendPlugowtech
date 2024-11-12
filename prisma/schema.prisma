@@ -8,7 +8,16 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  username String  @unique(map: "User_email_key")
-  password String?
+  id               Int      @id @default(autoincrement())
+  name             String
+  cpfOrCnpj        String   @unique
+  email            String   @unique
+  password         String
+  functionalDoc    String
+  birthDate        DateTime
+  partnerOrCompany String?
+  accessLevel      Int
+  status           Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
