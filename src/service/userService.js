@@ -1,15 +1,14 @@
-const prisma = require("../config/prismaClient");
+import { user } from "../config/prismaClient.js";
 
-const findUserByUsername = async (username) => {
-  return await prisma.user.findUnique({
+export const findUserByUsername = async (username) => {
+  return await user.findUnique({
     where: { username },
   });
 };
 
-const createUser = async (data) => {
-  return await prisma.user.create({
+export const createUser = async (data) => {
+  return await user.create({
     data,
   });
 };
 
-module.exports = { findUserByUsername, createUser };

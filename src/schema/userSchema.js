@@ -1,4 +1,4 @@
-const { z } = require("zod");
+import { z } from "zod";
 
 const userSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters long"),
@@ -11,4 +11,5 @@ const userSchema = z.object({
     .regex(/[@$!%*?&]/, "Password must contain at least one special character"),
 });
 
-module.exports = userSchema;
+export const safeParse = (data) => userSchema.safeParse(data);
+
