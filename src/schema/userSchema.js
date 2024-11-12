@@ -17,11 +17,11 @@ const userSchema = z.object({
   functionalDoc: z.string(),
 
   birthDate: z.string()
+    .min(10, "Data de nascimento deve estar no formato YYYY-MM-DD")
     .refine((val) => !isNaN(Date.parse(val)), {
       message: "Data de nascimento inválida",
-    })
-    .min(10, "Data de nascimento deve estar no formato YYYY-MM-DD"),
-
+    }),
+    
   partnerOrCompany: z.string().optional(),
 
   accessLevel: z.number().int(),
