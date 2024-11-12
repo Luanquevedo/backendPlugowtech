@@ -2,8 +2,12 @@ const express = require("express");
 const userRoutes = require("./routes/userRoutes");
 
 const app = express();
-app.use(express.json());
+app.use(json());
 
 app.use("/api", userRoutes);
 
-module.exports = app;
+export const listen = (port, callback) => {
+  app.listen(port, callback);
+};
+
+export default app;
