@@ -9,8 +9,8 @@ async function registerUser(req, res) {
 
     //validação se ususario já existe no banco
     const existingUser = await userService.findUserByCpfOrCnpj(validatedData.cpfOrCnpj);
-    if (existingUser){
-      return res.status(400).json({ error: "Usuário já existe com esse CPF ou CNPJ"});
+    if (existingUser) {
+      return res.status(400).json({ error: "Usuário já existe com esse CPF ou CNPJ" });
     }
 
     // Criptografia de senhas em hash
@@ -19,8 +19,16 @@ async function registerUser(req, res) {
 
     //Criação de usuário
     const user = await userService.createUser(validatedData);
-    res.status(201).json({ message: 'Usuário criado com sucesso!', user });
+    res.status(201).json({
+      message: 'Usuário criado com sucesso!',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      }
+    });
   } catch (error) {
+    console.error(error);
     res.status(400).json({ error: error.message });
   }
 }
