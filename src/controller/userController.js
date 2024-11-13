@@ -24,6 +24,13 @@ const createUser = async (req, res) => {
     const user = await _createUser({
       username: result.data.username,
       password: hashedPassword,
+      accessLevel: result.data.accessLevel,
+      status: result.data.status,  // Caso não tenha sido fornecido, será "active" por padrão
+      cpfCnpj: result.data.cpfCnpj,
+      email: result.data.email,
+      companyStore: result.data.companyStore,
+      professionalDocument: result.data.professionalDocument,
+      dateOfBirth: result.data.dateOfBirth,
     });
 
     return res.status(201).json(user);
