@@ -3,13 +3,13 @@ const prisma = new PrismaClient();
 
 
 // Função asincrona de validação de usuario existente
-async function findUserByCpfOrCnpj(cpfOrCnpj) {
-  return await prisma.user.findUnique({
-    where: {
-      cpfOrCnpj: cpfOrCnpj,
-    },
-  });
-}
+//async function findUserByCpfOrCnpj(cpfOrCnpj) {
+  //return await prisma.user.findUnique({
+   // where: {
+   //   cpfOrCnpj: cpfOrCnpj,
+   // },
+ // });
+//}
 
 // Função para criar um usuário
 const createUser = async (userData) => {
@@ -19,6 +19,6 @@ const createUser = async (userData) => {
 };
 
 module.exports = {
-  findUserByCpfOrCnpj,
+  //findUserByCpfOrCnpj,
   createUser,
 };
