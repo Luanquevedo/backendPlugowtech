@@ -1,10 +1,10 @@
 import { hash, compare } from "bcrypt";
-import { safeParse as _safeParse } from "../schema/userSchema.js";
+import { safeParse as _safeParse, safeParseLogin as _safeParseLogin } from "../schema/userSchema.js";
 import jwt from "jsonwebtoken";
-import { findUserByUsername as _findUserByUsername, createUser as _createUser } from "../service/userService.js";
+import { findUserByUsernameOrEmail as _findUserByUsernameOrEmail, findUserByUsername as _findUserByUsername, createUser as _createUser } from "../service/userService.js";
 
 const createUser = async (req, res) => {
-  console.log('Request Body:', req.body)
+  console.log('Request Body:', req.body);
   const result = _safeParse(req.body);
 
   if (!result.success) {
@@ -25,7 +25,7 @@ const createUser = async (req, res) => {
       username: result.data.username,
       password: hashedPassword,
       accessLevel: result.data.accessLevel,
-      status: result.data.status,  // Caso não tenha sido fornecido, será "active" por padrão
+      status: result.data.status || "active", // Caso não tenha sido fornecido, será "active" por padrão
       cpfCnpj: result.data.cpfCnpj,
       email: result.data.email,
       companyStore: result.data.companyStore,
@@ -39,18 +39,24 @@ const createUser = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const loginUser = async (req, res) => {
-  const result = _safeParse(req.body); // Valida o corpo da requisição (username e password)
 
-  if (!result.success) {
-    return res.status(400).json(result.error.errors);
+const loginUser = async (req, res) => {
+  const { success, data, error } = _safeParseLogin(req.body); // Valida o corpo da requisição (username e password)
+
+  if (!success) {
+    return res.status(400).json(error.errors);
   }
 
-  const { username, password } = result.data;
+  const { usernameOrEmail, password } = data;
+
+  // Verifique se o campo usernameOrEmail foi fornecido
+  if (!usernameOrEmail) {
+    return res.status(400).json({ error: "Username or email is required" });
+  }
 
   try {
     // Verifica se o usuário existe no banco de dados
-    const user = await _findUserByUsername(username);
+    const user = await _findUserByUsernameOrEmail(usernameOrEmail);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -73,5 +79,6 @@ const loginUser = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 export default { createUser, loginUser };

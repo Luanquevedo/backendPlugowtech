@@ -50,5 +50,25 @@ const userSchema = z.object({
   updatedAt: z.string().default(new Date().toISOString()), // Valor padrão para updatedAt
 });
 
+const loginSchema = z.object({
+  usernameOrEmail: z
+    .string()
+    .min(3, "Username or email must be at least 3 characters long")
+    .max(50, "Username or email must be at most 50 characters long")
+    .regex(
+      /^[a-zA-Z0-9_]+$/,
+      "Username must only contain letters, numbers, and underscores"
+    ).or(z.string().email("Invalid email format")),  // Permite username ou email
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[@$!%*?&]/, "Password must contain at least one special character"),
+});
+
+
 // Função para validar dados de entrada com o schema definido
 export const safeParse = (data) => userSchema.safeParse(data);
+export const safeParseLogin = (data) => loginSchema.safeParse(data)
