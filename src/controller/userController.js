@@ -42,12 +42,10 @@ const createUser = async (req, res) => {
 
 //Api de atualização de dados cadastrais base sem alterar niveis de acesso ou de status
 const updateData = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params; // Captura o ID fornecido na rota
+  //UPGRADE FUTURO: Adicionar validação de token aqui para garantir que o usuário só possa atualizar seus próprios dados.
 
-  //Verificação se o usuario esta tentando atualizar os proprios dados
-  if (req.user.userId !== parseInt(id)){
-    return res.status(403).json({error: "Acesso negado"})
-  }
+  // Dados enviados no corpo da requisição
   const {
     username,
     password,
@@ -59,6 +57,7 @@ const updateData = async (req, res) => {
   } = req.body;
 
   try {
+    // Prepara os dados para atualização
     const dataToUpdate = {
       username,
       cpfCnpj,
@@ -68,29 +67,33 @@ const updateData = async (req, res) => {
       dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
     };
 
-    //atualização de senha e criptografada em hash para salvar no banco de dados
-      if (password) {
-        const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
-        dataToUpdate.password = await hash (password, saltRounds);
-      }
+    // Atualiza a senha com hashing caso seja fornecida
+    if (password) {
+      const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
+      dataToUpdate.password = await hash(password, saltRounds);
+    }
 
-      //remove campos vazios para que atualize apenas os dados desejados
-      Object.keys(dataToUpdate).forEach(key => dataToUpdate[key] === undefined && delete dataToUpdate[key]);
+    // Remove campos não definidos (undefined)
+    Object.keys(dataToUpdate).forEach(
+      (key) => dataToUpdate[key] === undefined && delete dataToUpdate[key]
+    );
 
+    // Atualiza o usuário no banco de dados pelo ID fornecido
+    const updateUser = await prisma.user.update({
+      where: { id: parseInt(id) },
+      data: dataToUpdate,
+    });
 
-      const updateUser = await prisma.user.update({
-        where: { id: parseInt(id) },
-        data: dataToUpdate,
-      });
-
-    res.json(updateUser);
+    res.json(updateUser); // Retorna os dados atualizados
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({ error: "Usuário não localizado" });
     }
-    res.status(500).json({ error: "Não foi possivel atualizar o usuário" });
+    console.error(error); // Log do erro para depuração
+    res.status(500).json({ error: "Não foi possível atualizar o usuário" });
   }
-}
+};
+
 
 const loginUser = async (req, res) => {
   const { success, data, error } = _safeParseLogin(req.body); // Valida o corpo da requisição (username e password)
