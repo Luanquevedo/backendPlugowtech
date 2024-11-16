@@ -42,7 +42,7 @@ const createUser = async (req, res) => {
 
 //Api de atualização de dados cadastrais base sem alterar niveis de acesso ou de status
 const updateData = async (req, res) => {
-  const { id } = req.params; // Captura o ID fornecido na rota
+  const { id } = req.query; // Captura o ID fornecido na rota
   //UPGRADE FUTURO: Adicionar validação de token aqui para garantir que o usuário só possa atualizar seus próprios dados.
 
   // Dados enviados no corpo da requisição
